@@ -29,7 +29,6 @@ body.x = app.screen.width - 128;
 body.y = app.screen.height - 128;
 
 const runGame = () => {
-    console.log("Start game");
     grid.drawGrid(app.stage);
     let startXY = grid.getSpawnXY();
 
@@ -40,7 +39,7 @@ const runGame = () => {
 
     app.ticker.add((delta) => {
         /** на обновление */
-        console.log(grid.queue);
+
         moveBody(delta);
     });
 };
