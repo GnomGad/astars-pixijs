@@ -1,14 +1,28 @@
 import { Application, Graphics, Sprite } from "./pixi/pixi.min.mjs";
+
+/**
+ * Реализация сетки
+ * @class
+ */
 export default class Grid {
+    /**
+     * Конструктор
+     * @param {{x,y}} cellSize объект с размерами ячейки
+     * @param {{x,y}} gridSize объект с размером сетки
+     * @param {*} g графический объект для рисования
+     */
     constructor(cellSize, gridSize, g) {
         this.cellSize = cellSize;
         this.gridSize = gridSize;
         this.localGrid = null;
         this.grid = g;
         this.queue = [];
-
+        this.endXY = null;
         this.init();
     }
+    /**
+     * Инициализация, используется по стандарту
+     */
     init() {
         // создаем массив для заполнения его нулями
         let initGraph = [];
@@ -28,30 +42,36 @@ export default class Grid {
                 initGraph[x].push(0);
             }
         }
+        // чтобы с гридом можно было взаимодействовать проще
         this.localGrid = initGraph;
+
+        // создаем граф
         this.graph = new Graph(initGraph);
+        // получаем координаты первой свободной точки
         this.spawnXY = this.getSpawnXY();
+
         this.grid.interactive = true;
         this.grid.cursor = "pointer";
+
         this.grid.on("pointerdown", (event) => {
             let x = Math.floor(event.global.x / this.cellSize.x);
             let y = Math.floor(event.global.y / this.cellSize.y);
+
             let end = this.graph.grid[x][y];
-            let result = astar.search(
-                this.graph,
-                this.graph.grid[this.spawnXY.x][this.spawnXY.y],
-                end
-            );
-            for (let i = 0; i < result.length; i++) {
-                this.queue.push({ x: result[i].x * 128, y: result[i].y * 128 });
+            let start = this.graph.grid[this.spawnXY.x][this.spawnXY.y];
+
+            // если элементы есть то стартовую точку нужно считать как последнюю точку прошлого маршрута
+            if (this.queue.length != 0) {
+                let lastElement = this.queue[this.queue.length - 1];
+                start = this.graph.grid[lastElement.x][lastElement.y];
             }
-            console.log(result);
-            //
+
+            let result = astar.search(this.graph, start, end);
+            // запушим все новые пути в список путей
+            for (let i = 0; i < result.length; i++) {
+                this.queue.push({ x: result[i].x, y: result[i].y });
+            }
         });
-        //var start = this.graph.grid[0][0];
-        //var end = this.graph.grid[0][3];
-        // var result = astar.search(this.graph, start, end);
-        // console.log("123213", result);
     }
 
     drawGrid(stage) {

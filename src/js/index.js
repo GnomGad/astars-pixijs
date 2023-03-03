@@ -7,17 +7,12 @@ const cellSize = {
 };
 
 const gridSize = {
-    x: 10,
-    y: 10,
+    x: 15,
+    y: 15,
 };
 
-const g = new Graphics();
-const grid = new Grid(cellSize, gridSize, g);
-
-//var start = graph.grid[0][0];
-//var end = graph.grid[0][3];
-//var result = astar.search(graph, start, end);
-//console.log(result);
+const graphics = new Graphics();
+const grid = new Grid(cellSize, gridSize, graphics);
 
 const app = new Application({
     view: document.getElementById("canvas"),
@@ -35,45 +30,61 @@ const runGame = () => {
     console.log("Start game");
     grid.drawGrid(app.stage);
     let startXY = grid.getSpawnXY();
+
     body.x = startXY.x * cellSize.x;
     body.y = startXY.y * cellSize.y;
-    console.log(startXY);
+
     app.stage.addChild(body);
+
     app.ticker.add((delta) => {
-        let speed = delta * 5;
-        if (grid.queue.length === 0) {
-            return;
-        }
-
-        let path = grid.queue[0];
-
-        if (path.y >= body.y) {
-            body.y += speed;
-        } else {
-            body.y -= speed;
-        }
-        if (path.x >= body.x) {
-            body.x += speed;
-        } else {
-            body.x -= speed;
-        }
-
-        let diffX = body.x - path.x;
-        let diffY = body.y - path.y;
-        let diffNormal = 4;
-        if (
-            diffX < diffNormal &&
-            diffX > -diffNormal &&
-            diffY < diffNormal &&
-            diffY > -diffNormal
-        ) {
-            grid.spawnXY = { x: path.x / cellSize.x, y: path.y / cellSize.y };
-            grid.queue.shift();
-        }
+        /** на обновление */
+        console.log(grid.queue);
+        moveBody(delta);
     });
 };
+const moveBody = (delta) => {
+    // если очередь пуста то нам нечего тут делать
+    if (grid.queue.length === 0) {
+        return;
+    }
+    // берем скорость по дельте зависит от количества кадров
+    let speed = delta * 25;
+    // берем из очереди первый элемент
+    let gridXY = grid.queue[0];
+    // делаем преобразования ( перевод в координаты)
+    let path = {
+        x: gridXY.x * cellSize.x,
+        y: gridXY.y * cellSize.y,
+    };
+    /**
+     * перемещение возможно только верх-низ и лево-право
+     * координаты тоже так же приходят
+     */
+    if (path.y >= body.y) {
+        body.y += speed;
+    } else {
+        body.y -= speed;
+    }
+    if (path.x >= body.x) {
+        body.x += speed;
+    } else {
+        body.x -= speed;
+    }
 
-//assetsMap.sprites.forEach((value) => app.load(value.url));
-
-//app.loader.load(runGame);
+    // было замечено что координаты в конце не всегда равны конечным координатам
+    // необходимо было сделать нормализацию для этого
+    let diffX = body.x - path.x;
+    let diffY = body.y - path.y;
+    let diffNormal = speed;
+    if (
+        diffX < diffNormal &&
+        diffX > -diffNormal &&
+        diffY < diffNormal &&
+        diffY > -diffNormal
+    ) {
+        // если мы дошли до конца то должны отметить новую позицию для старта и удалить старую
+        grid.spawnXY = grid.queue[0];
+        grid.queue.shift();
+    }
+};
 runGame();
