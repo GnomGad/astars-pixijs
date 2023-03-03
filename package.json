@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "deploy": "gh-pages -d dist",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "type": "module",
@@ -19,5 +20,8 @@
     "gulp-imagemin": "^8.0.0",
     "gulp-plumber": "^1.2.1",
     "gulp-uglify": "^3.0.2"
+  },
+  "devDependencies": {
+    "gh-pages": "^5.0.0"
   }
 }

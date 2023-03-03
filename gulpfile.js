@@ -9,21 +9,21 @@ import babel from "gulp-babel";
 
 const html = {
         in: "./index.html",
-        out: "./dest",
+        out: "./dist",
     },
     js = {
         in: "./src/js/**/*.*s",
-        out: "./dest/src/js",
+        out: "./dist/src/js",
         name: "main.min.js",
     },
     css = {
         in: "./src/css/**/*.css",
-        out: "./dest/src/css",
+        out: "./dist/src/css",
         name: "main.min.css",
     },
     img = {
         in: "./src/assets/**/*.*",
-        out: "./dest/src/assets",
+        out: "./dist/src/assets",
     };
 
 // task for html
