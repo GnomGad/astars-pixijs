@@ -21,7 +21,7 @@ const app = new Application({
     backgroundColor: 0xc0c2c2,
 });
 
-const body = Sprite.from("/src/assets/body.png");
+const body = Sprite.from("./src/assets/body.png");
 
 body.x = app.screen.width - 128;
 body.y = app.screen.height - 128;
