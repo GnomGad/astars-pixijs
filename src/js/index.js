@@ -20,8 +20,10 @@ const app = new Application({
     height: cellSize.y * gridSize.y,
     backgroundColor: 0xc0c2c2,
 });
+let img = new Image();
+img.src = "./src/assets/body.png";
 
-const body = Sprite.from("./src/assets/body.png");
+const body = Sprite.from(img);
 
 body.x = app.screen.width - 128;
 body.y = app.screen.height - 128;
@@ -87,4 +89,5 @@ const moveBody = (delta) => {
         grid.queue.shift();
     }
 };
-runGame();
+
+window.addEventListener("load", runGame);
