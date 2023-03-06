@@ -1,5 +1,3 @@
-import { Application, Graphics, Sprite } from "./pixi/pixi.min.mjs";
-
 /**
  * Реализация сетки
  * @class
@@ -9,7 +7,7 @@ export default class Grid {
      * Конструктор
      * @param {{x,y}} cellSize объект с размерами ячейки
      * @param {{x,y}} gridSize объект с размером сетки
-     * @param {*} g графический объект для рисования
+     * @param {PIXI.Graphics} g графический объект для рисования
      */
     constructor(cellSize, gridSize, g) {
         this.cellSize = cellSize;
@@ -73,7 +71,10 @@ export default class Grid {
             }
         });
     }
-
+    /**
+     * Отрисовка сетки
+     * @param {Pixi.Container} stage  контейнер куда добавить сетку
+     */
     drawGrid(stage) {
         const wallColor = 0xc34288;
         const pathColor = 0xc2c2c2;
@@ -97,6 +98,10 @@ export default class Grid {
         stage.addChild(this.grid);
     }
 
+    /**
+     * Вернуть первое свободное положение для спавна
+     * @returns {{x,y}} вернет объек с коордианатми в сетке XY
+     */
     getSpawnXY() {
         for (let x = 0; x < this.gridSize.x; x++) {
             for (let y = 0; y < this.gridSize.y; y++) {
